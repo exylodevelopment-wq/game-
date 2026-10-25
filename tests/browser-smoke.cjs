@@ -1,7 +1,8 @@
 const assert = require('node:assert/strict');
 const { chromium } = require('playwright');
 const URL = process.env.GAME_URL || 'http://127.0.0.1:8080';
-const SAVE = 'ultimul-rasarit-v3';
+const SAVE = 'ultimul-rasarit-v4';
+const UPSTREAM_COMMIT = 'fa2e73a3f899bd59ded1a9e920eda92f822c32ba';
 
 (async () => {
   const browser = await chromium.launch({
@@ -36,6 +37,7 @@ const SAVE = 'ultimul-rasarit-v3';
       if (/\/assets\/.*\.(png|jpe?g)(?:\?|$)/i.test(request.url())) imageRequests.push(request.url());
     });
     await page.goto(URL);
+    await page.waitForFunction(() => document.getElementById('startBtn') && !document.getElementById('startBtn').disabled, null, {timeout:60000});
     await page.click(fixture ? '#continueBtn' : '#startBtn');
     return page;
   }
@@ -43,6 +45,8 @@ const SAVE = 'ultimul-rasarit-v3';
     const current = (await state(page)).state;
     if (current === 'loot') await page.click('#closeLoot');
     else if (current === 'inventory') await page.click('#closeBag');
+    else if (current === 'objective') await page.click('#closeRelay');
+    else if (current === 'won') await page.click('#continueExplore');
     if ((await state(page)).state === 'playing') await page.keyboard.press('Escape');
     await page.click('#saveBtn');
     return page.evaluate(key => JSON.parse(localStorage.getItem(key)), SAVE);
@@ -74,6 +78,7 @@ const SAVE = 'ultimul-rasarit-v3';
     const page = await open(null, {viewport:{width:1440,height:1000}});
     let snapshot = await state(page);
     const world = await nearby(page);
+    const questMarkers = await page.evaluate(() => { const game=survival.getState(); return SurvivalWorld.generate(game.seed,game.mapSize).objects.filter(object=>['relay','extract'].includes(object.type)); });
     check(snapshot.mapSize >= 384 && snapshot.siteCount >= 30, 'Large region contains many settlements');
     check(snapshot.weapon === 'fists' && snapshot.player.ammo === 0 &&
       Object.values(snapshot.bag).every(amount => amount === 0), 'New survivor starts completely empty handed');
@@ -94,17 +99,18 @@ const SAVE = 'ultimul-rasarit-v3';
         return {hash,colors:colors.size};
       }
       return {
-        frames:Array.from({length:6},(_,i)=>sample(Math.PI/2,i+1).hash),
+        frames:Array.from({length:4},(_,i)=>sample(Math.PI/2,i+1).hash),
         directions:[0,Math.PI/2,Math.PI,-Math.PI/2].map(angle=>sample(angle,0).hash),
         idle:[sample(0,0).hash,sample(0,0).hash],
         colors:sample(Math.PI/2,0).colors,
+        sourceCommit:GameArt.diagnostics.sourceCommit,
       };
     });
-    check(new Set(artwork.frames).size === 6, 'Walking visibly changes actual sprite pixels across animation frames');
+    check(new Set(artwork.frames).size === 4, 'Walking visibly changes actual sprite pixels across animation frames');
     check(new Set(artwork.directions).size === 4, 'Survivor has four distinct facing directions');
     check(artwork.idle[0] === artwork.idle[1] && artwork.colors > 4 && artwork.colors <= 80,
       'Idle sprite is stable and uses a deliberately limited pixel-art palette');
-    check(imageRequests.length === 0, 'World and characters do not load pasted reference photographs');
+    check(artwork.sourceCommit === UPSTREAM_COMMIT && imageRequests.length > 0 && imageRequests.every(url => !['/assets/locations.png','/assets/survivor.png','/assets/zombies.png'].includes(new globalThis.URL(url).pathname)), 'Source startup uses pinned upstream sprites rather than pasted reference photographs');
 
     const house = world.objects.find(object => object.type === 'house');
     const container = world.objects.find(object => object.type === 'container' && object.house !== undefined);
@@ -232,6 +238,65 @@ const SAVE = 'ultimul-rasarit-v3';
     check((await state(corpseSearch)).bag.cloth===cloth+1,'Corpse contents must be manually taken');
     await corpseSearch.context().close();
 
+    const relay=questMarkers.find(object=>object.type==='relay');
+    const extraction=questMarkers.find(object=>object.type==='extract');
+    check(!!relay && !!extraction,'Radio relay and evacuation point are actual world objects');
+    const noParts=await open(placed(base,relay.x,relay.y+4));
+    await noParts.keyboard.press('e');await noParts.waitForFunction(()=>survival.getState().state==='objective');
+    check(await noParts.locator('#activateRelay').isDisabled() && !(await state(noParts)).expedition.relayOnline,
+      'Radio repair UI refuses activation when required materials have not been collected');
+    await noParts.context().close();
+    const repairFixture=placed(base,relay.x,relay.y+4);
+    Object.assign(repairFixture.bag,{battery:2,scrap:4,rope:1,food:1});
+    const repairing=await open(repairFixture);
+    await repairing.keyboard.press('e');await repairing.waitForFunction(()=>survival.getState().state==='objective');
+    const beforeActivation=copy((await state(repairing)).bag);
+    await repairing.waitForTimeout(150);
+    check(!(await state(repairing)).expedition.relayOnline && (await state(repairing)).expedition.signalTime===0 &&
+      JSON.stringify((await state(repairing)).bag)===JSON.stringify(beforeActivation),
+      'Inspecting the station neither consumes materials nor starts transmission automatically');
+    await repairing.click('#activateRelay');
+    snapshot=await state(repairing);
+    check(snapshot.state==='playing' && snapshot.expedition.relayOnline && snapshot.bag.battery===0 &&
+      snapshot.bag.scrap===0 && snapshot.bag.rope===0 && snapshot.bag.food===1,
+      'Explicit radio repair consumes the exact collected materials without awarding supplies');
+    await repairing.waitForFunction(()=>survival.getState().expedition.signalTime>0.25,{}, {timeout:5000});
+    check(!(await state(repairing)).expedition.rescueReady,'Starting a radio does not skip the ninety-second defence');
+    const transmission=await save(repairing);
+    const pausedSignal=(await state(repairing)).expedition.signalTime;
+    await repairing.waitForTimeout(200);
+    check((await state(repairing)).expedition.signalTime===pausedSignal,'Paused gameplay cannot advance radio transmission');
+    await repairing.context().close();
+    const awayFixture=placed(transmission,base.player.x,base.player.y);
+    const away=await open(awayFixture);
+    const restoredSignal=(await state(away)).expedition.signalTime;
+    await away.waitForTimeout(300);
+    check((await state(away)).expedition.relayOnline && (await state(away)).expedition.signalTime===restoredSignal &&
+      restoredSignal===transmission.expedition.signalTime,
+      'Saved radio progress restores exactly and stays frozen away from the station');
+    await away.context().close();
+    const tooEarly=placed(transmission,extraction.x,extraction.y+4);
+    const notReady=await open(tooEarly);await notReady.keyboard.press('e');
+    check((await state(notReady)).state==='playing' && !(await state(notReady)).expedition.completed,
+      'Evacuation interaction cannot complete an unfinished transmission');
+    await notReady.context().close();
+    const readyFixture=placed(base,extraction.x,extraction.y+4);
+    readyFixture.expedition={discovered:true,relayOnline:true,signalTime:90,rescueReady:true,completed:false,waveTime:0};
+    const evacuation=await open(readyFixture);
+    await evacuation.waitForTimeout(150);
+    check((await state(evacuation)).state==='playing' && !(await state(evacuation)).expedition.completed,
+      'A confirmed rescue signal still requires manually using the evacuation point');
+    await evacuation.keyboard.press('e');await evacuation.waitForFunction(()=>survival.getState().state==='won');
+    check((await state(evacuation)).expedition.completed && await evacuation.locator('#victoryOverlay').isVisible() &&
+      Object.values((await state(evacuation)).bag).every(amount=>amount===0),
+      'Manual evacuation concludes the expedition without inventing inventory rewards');
+    await evacuation.click('#continueExplore');
+    const completedSave=await save(evacuation);
+    await evacuation.reload();await evacuation.waitForFunction(()=>!document.getElementById('startBtn').disabled,null,{timeout:60000});await evacuation.click('#continueBtn');
+    check(completedSave.expedition.completed && (await state(evacuation)).expedition.completed && (await state(evacuation)).state==='playing',
+      'Completed expedition persists and exploration can continue afterwards');
+    await evacuation.context().close();
+
     const mobile=await open(null,{viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:2});
     await mobile.click('#bagBtn');const frozen=(await state(mobile)).time;await mobile.waitForTimeout(150);
     check((await state(mobile)).state==='inventory' && (await state(mobile)).time===frozen &&
@@ -243,7 +308,7 @@ const SAVE = 'ultimul-rasarit-v3';
     await mobile.waitForTimeout(500);await cdp.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});
     check((await state(mobile)).player.x>mobileX+10,'Mobile joystick moves the survivor');
     check(await mobile.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'Mobile game fits the screen width');
-    await mobile.screenshot({path:'/workspace/game-artifacts/mobile-v3.png',fullPage:true});
+    await mobile.screenshot({path:'/workspace/game-artifacts/mobile-v4.png',fullPage:true});
     await mobile.setViewportSize({width:844,height:390});await mobile.waitForTimeout(150);
     check((await mobile.locator('#gameFrame').boundingBox()).height>=380,'Landscape phone screen remains dedicated to gameplay');
     await mobile.context().close();

@@ -145,3 +145,15 @@ test('door approaches stay clear of solid props and other building footprints', 
   }
   assert.deepEqual(failures, [], 'Blocked door approaches:\n' + failures.join('\n'));
 });
+
+
+test('every region contains enough physically searchable radio repair parts without automatic gifts', () => {
+  for (const seed of [1,17,437,69421,123456,955301]) {
+    const world = World.generate(seed);
+    const total = {battery:0,scrap:0,rope:0};
+    for (const object of world.objects) for (const entry of object.contents || []) {
+      if (entry.item in total) total[entry.item] += entry.amount;
+    }
+    assert.ok(total.battery >= 2 && total.scrap >= 4 && total.rope >= 1, 'searchable world components for seed '+seed);
+  }
+});

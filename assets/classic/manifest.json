@@ -1,0 +1,150 @@
+{
+  "source": "https://github.com/011eh/minidayz",
+  "commit": "fa2e73a3f899bd59ded1a9e920eda92f822c32ba",
+  "files": {
+    "building/b_church-sheet0.png": {
+      "file": "assets/classic/building/b_church-sheet0.png",
+      "sha256": "190cafb3d469ba55d6dd0820aee78ce31e51c88b73583040bd25c92783eb7a51"
+    },
+    "building/b_garage_blue-sheet0.png": {
+      "file": "assets/classic/building/b_garage_blue-sheet0.png",
+      "sha256": "fd22b0e821f114200f9915b9709c7cc06938f9040725fef6e8a71c960fe0e26e"
+    },
+    "building/b_garage_blue_int-sheet0.png": {
+      "file": "assets/classic/building/b_garage_blue_int-sheet0.png",
+      "sha256": "aca36b140237d2806b45aeee0a91c8a7bafd1fb62787158036bffa5dc93c0620"
+    },
+    "building/b_hospital-sheet0.png": {
+      "file": "assets/classic/building/b_hospital-sheet0.png",
+      "sha256": "e7615f033c56edb31f42648dd81e537cb7920b784f41dffb37e0f997dd929235"
+    },
+    "building/b_hospital_int-sheet0.png": {
+      "file": "assets/classic/building/b_hospital_int-sheet0.png",
+      "sha256": "a3a72727111369094182a6fa68e211440311c118d19515c14e85c2fd2a36e54c"
+    },
+    "building/b_military_barrack-sheet0.png": {
+      "file": "assets/classic/building/b_military_barrack-sheet0.png",
+      "sha256": "878bd253bb77c0229155fcf046a71fd85f700cd08792641d2a48f475c68faef3"
+    },
+    "building/b_military_barrack_int-sheet0.png": {
+      "file": "assets/classic/building/b_military_barrack_int-sheet0.png",
+      "sha256": "15ea2d7c14ee5f8b26b841e02f7186fbb79af77d8812209b227380a5cd961714"
+    },
+    "building/b_village_brown-sheet0.png": {
+      "file": "assets/classic/building/b_village_brown-sheet0.png",
+      "sha256": "f09b803d133d96d0363662e9df9e5bd30e629c851c3a58f56f9f09ebcf8c436f"
+    },
+    "building/b_village_brown_int-sheet0.png": {
+      "file": "assets/classic/building/b_village_brown_int-sheet0.png",
+      "sha256": "ffe62d1ed7f42e31b964ca6d94302a9746607d8cf447bb225357eb81f3d55fa7"
+    },
+    "building/b_village_green-sheet0.png": {
+      "file": "assets/classic/building/b_village_green-sheet0.png",
+      "sha256": "8c1bdbc72256a60a1c12f31e1b9fcf681a15d14a896f1a2bb6a34aee2ea85221"
+    },
+    "building/door.png": {
+      "file": "assets/classic/building/door.png",
+      "sha256": "054905553a7a044619551dffdee97525db68fe55c600dcf619581b2ffab72b46"
+    },
+    "character/player_skin/player_skin_def_1.png": {
+      "file": "assets/classic/character/player_skin/player_skin_def_1.png",
+      "sha256": "942170e11552ac6a2171bb6c29257034c9a61a6789c78aaef52c21c99972cea1"
+    },
+    "environment/ground_tilemap.png": {
+      "file": "assets/classic/environment/ground_tilemap.png",
+      "sha256": "a41099f379b77a0932832f4c268d62bc7d851806539f1aea320bdf5422c81a14"
+    },
+    "environment/tree_leaves_1.png": {
+      "file": "assets/classic/environment/tree_leaves_1.png",
+      "sha256": "53e2a65b35d8a7f0b75e71303306f39ce1e367851fba8ae9189b427fc948664d"
+    },
+    "environment/tree_leaves_2.png": {
+      "file": "assets/classic/environment/tree_leaves_2.png",
+      "sha256": "ae9a2e669c7d55cbb414a99ab36ed488db8d14820f5d24be5abfe255b5e7c736"
+    },
+    "environment/tree_leaves_3.png": {
+      "file": "assets/classic/environment/tree_leaves_3.png",
+      "sha256": "d2e1dc619574edd2974b2561f5bcafa89b4206081bf8c73f7855f656f41cbaaa"
+    },
+    "environment/tree_leaves_4.png": {
+      "file": "assets/classic/environment/tree_leaves_4.png",
+      "sha256": "76589f16f6ca999d3ce265dc93eaa3223db3505032992d37907c2cba5ca7fed4"
+    },
+    "environment/tree_pine_1.png": {
+      "file": "assets/classic/environment/tree_pine_1.png",
+      "sha256": "78845a25b1e7ba4638f3c0b01721837b3920dd2a0c45d9f99f2ed139a564099e"
+    },
+    "environment/tree_pine_2.png": {
+      "file": "assets/classic/environment/tree_pine_2.png",
+      "sha256": "758bdb5c53c93d3a3a1dea0e01016b32489f5f8351b1099eb1f4505110156fc8"
+    },
+    "equipment/clothes/tshirt.png": {
+      "file": "assets/classic/equipment/clothes/tshirt.png",
+      "sha256": "dc2ccebf0fa54c7d7ada13719ca69add198a2d6c80442a8088298b1d90108945"
+    },
+    "equipment/pants/jeans.png": {
+      "file": "assets/classic/equipment/pants/jeans.png",
+      "sha256": "fb4810b4c6d6815fae561f7fa036e37f3b60dd57a58171df949c862b6aee507a"
+    },
+    "equipment/weapon/main/izh-43.png": {
+      "file": "assets/classic/equipment/weapon/main/izh-43.png",
+      "sha256": "babd58b0fcd993a30a849852359b8c7fc8d21c02dc87e26b1677472d956f4b46"
+    },
+    "equipment/weapon/main/mosin.png": {
+      "file": "assets/classic/equipment/weapon/main/mosin.png",
+      "sha256": "1af15f325a08b863dc259defa90cd980533834a38736aff607c1c5cc8bf1234f"
+    },
+    "equipment/weapon/melee/hatchet.png": {
+      "file": "assets/classic/equipment/weapon/melee/hatchet.png",
+      "sha256": "1758b16fad284d79d7785968c119dc3b24d546444006dd6992e7e6401a050eed"
+    },
+    "equipment/weapon/melee/hunter_knife.png": {
+      "file": "assets/classic/equipment/weapon/melee/hunter_knife.png",
+      "sha256": "65839c6df34273a5e9e95bda791e27101a835316663591aed2b6430be7e26e65"
+    },
+    "equipment/weapon/melee/pickaxe.png": {
+      "file": "assets/classic/equipment/weapon/melee/pickaxe.png",
+      "sha256": "230575404c476fd8bd7305a7c002cd6af201cd709c88397a329128addcc3761b"
+    },
+    "equipment/weapon/pistol/glock.png": {
+      "file": "assets/classic/equipment/weapon/pistol/glock.png",
+      "sha256": "84d94d5b26848a466ab4f4d5391c01d04da7c955396cc2909da3da068ecccd9f"
+    },
+    "zed/zed_army_skin1.png": {
+      "file": "assets/classic/zed/zed_army_skin1.png",
+      "sha256": "b1f2256eb6b379c72483dc75d990cb2f1f8cc27123df7e63b2d8572c679e88df"
+    },
+    "zed/zed_army_skin2.png": {
+      "file": "assets/classic/zed/zed_army_skin2.png",
+      "sha256": "0ffb27c5a0c97d10379d444116446e3774d5ee0ea5951a93aee5da9f115e883c"
+    },
+    "zed/zed_fast_skin1.png": {
+      "file": "assets/classic/zed/zed_fast_skin1.png",
+      "sha256": "5ee0b0a791d062b003a5753aa1913fee02e30f8729280bc2cbee11cef359f8b5"
+    },
+    "zed/zed_normal_skin1.png": {
+      "file": "assets/classic/zed/zed_normal_skin1.png",
+      "sha256": "ce4f66c65b838b1e1054083ed4449d05403f5673518ea0040ddb01d260c6ebba"
+    },
+    "zed/zed_normal_skin2.png": {
+      "file": "assets/classic/zed/zed_normal_skin2.png",
+      "sha256": "c5c2f61651c8e9c57f0b31edeeef52de4b46cbece9e6b0d74d685237d61281c2"
+    },
+    "zed/zed_normal_skin3.png": {
+      "file": "assets/classic/zed/zed_normal_skin3.png",
+      "sha256": "152b0fa7a96a648d8cbedc482622fd07df38e598fccbb9bc2e3cb4dd3995e057"
+    },
+    "zed/zed_normal_skin4.png": {
+      "file": "assets/classic/zed/zed_normal_skin4.png",
+      "sha256": "a2d67372d650b6ceaa28b0df55ffadc6a06d515a82b05a4936c9f2e41823f63d"
+    },
+    "zed/zed_normal_skin7.png": {
+      "file": "assets/classic/zed/zed_normal_skin7.png",
+      "sha256": "ce46d8186b52292813d2e5f9f6719679c6c7426848d67912c5ddd71e1bff9be0"
+    },
+    "zed/zed_normal_skin8.png": {
+      "file": "assets/classic/zed/zed_normal_skin8.png",
+      "sha256": "817738215917c2155a15fd8315525f3a24f83232aa3aa2d8e96544be73162ee1"
+    }
+  }
+}
